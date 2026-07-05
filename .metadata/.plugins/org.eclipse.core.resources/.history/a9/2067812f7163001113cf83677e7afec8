@@ -1,0 +1,43 @@
+package com.shopsphere.service;
+
+import com.shopsphere.entity.Order;
+import com.shopsphere.repository.OrderRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private OrderRepository repo;
+
+    public Orders placeOrder(Orders order) {
+
+        order.setStatus("PLACED");
+
+        return repo.save(order);
+    }
+
+    public List<Orders> getAllOrders() {
+        return repo.findAll();
+    }
+
+    public List<Orders> getUserOrders(Long userId) {
+        return repo.findByUserId(userId);
+    }
+
+    public Orders updateStatus(
+            Long id,
+            String status) {
+
+        Orders order =
+                repo.findById(id).orElseThrow();
+
+        order.setStatus(status);
+
+        return repo.save(order);
+    }
+}

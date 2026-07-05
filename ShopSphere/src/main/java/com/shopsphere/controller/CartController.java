@@ -1,0 +1,42 @@
+package com.shopsphere.controller;
+
+import com.shopsphere.entity.Cart;
+import com.shopsphere.service.CartService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/cart")
+@CrossOrigin("*")
+public class CartController {
+
+    @Autowired
+    private CartService service;
+
+    @PostMapping
+    public Cart addToCart(@RequestBody Cart cart) {
+        return service.addToCart(cart);
+    }
+
+    @GetMapping("/{userId}")
+    public List<Cart> getCart(@PathVariable Long userId) {
+        return service.getUserCart(userId);
+    }
+    @DeleteMapping("/{id}")
+    public void removeCartItem(@PathVariable Long id) {
+        service.removeCartItem(id);
+    }
+    
+    @PutMapping("/{id}")
+    public Cart updateQuantity(
+            @PathVariable Long id,
+            @RequestParam int quantity) {
+
+        return service.updateQuantity(id, quantity);
+    }
+    
+   
+}
