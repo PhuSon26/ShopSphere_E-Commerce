@@ -1,272 +1,303 @@
-# 🛒 ShopSphere – Full Stack E-Commerce Web Application
+# 🛒 ShopSphere - Full Stack E-Commerce Web Application
 
-ShopSphere is a full-stack e-commerce web application built using **Spring Boot**, **React.js**, and **MySQL**. It provides a secure and scalable online shopping platform where users can browse products, manage their shopping cart, and place orders, while administrators can efficiently manage products, categories, and customer orders.
+A modern Full Stack E-Commerce web application built using **Spring Boot**, **ReactJS**, **MySQL**, and **JWT Authentication**. ShopSphere provides a complete online shopping experience with secure authentication, product management, shopping cart, order management, and an admin dashboard.
 
 ---
 
 ## 🚀 Features
 
 ### 👤 User Features
+- User Registration & Login
+- JWT Authentication
+- Secure Role-Based Authorization
+- Browse Products
+- Search Products
+- View Product Details
+- Add Products to Cart
+- User-wise Shopping Cart
+- Increase / Decrease Product Quantity
+- Remove Products from Cart
+- Checkout
+- Place Orders
+- View Order History
+- Responsive UI
+- Toast Notifications
 
-* User Registration & Login
-* Secure JWT Authentication
-* Browse Products
-* Search Products
-* Filter Products by Category
-* View Product Details
-* Add to Cart
-* Update Cart Quantity
-* Remove Items from Cart
-* Place Orders
-* View Order History
-* Responsive User Interface
+---
 
 ### 👨‍💼 Admin Features
-
-* Admin Login
-* Product Management (CRUD)
-* Category Management
-* Inventory Management
-* Order Management
-* User Management
-* Secure Role-Based Authorization
+- Admin Login
+- Dashboard Overview
+- Add New Products
+- Update Existing Products
+- Delete Products
+- Search Products
+- Inventory Management
+- View All Orders
+- Update Order Status
+- Product Stock Management
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-
-* Java 17
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* Hibernate
-* JWT Authentication
-* RESTful APIs
-* Maven
-
 ### Frontend
+- ReactJS
+- React Router DOM
+- Axios
+- Bootstrap 5
+- React Toastify
 
-* React.js
-* JavaScript (ES6+)
-* HTML5
-* CSS3
-* Bootstrap
-* Axios
+### Backend
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- Hibernate
+- JWT Authentication
+- REST APIs
 
 ### Database
+- MySQL
 
-* MySQL
-
-### Tools & Technologies
-
-* Git
-* GitHub
-* Postman
-* IntelliJ IDEA
-* Visual Studio Code
+### Tools
+- Eclipse IDE
+- VS Code
+- Postman
+- Git
+- GitHub
+- Maven
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
-```text
-ShopSphere E-Comm Website/
+```
+ShopSphere/
 │
-├── Backend/
-│   ├── src/
-│   ├── pom.xml
-│   └── ...
+├── frontend/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── App.js
+│   └── package.json
 │
-├── shopsphere-frontend/
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── ...
+├── backend/
+│   ├── controller/
+│   ├── service/
+│   ├── repository/
+│   ├── entity/
+│   ├── security/
+│   ├── config/
+│   └── application.properties
 │
 └── README.md
 ```
 
 ---
 
-## ⚙️ Prerequisites
+## ✨ Modules
 
-Before running the project, make sure you have installed:
+### Authentication Module
+- Register
+- Login
+- JWT Token
+- Role-Based Authentication
 
-* Java 17 or later
-* Maven
-* Node.js
-* npm
-* MySQL Server
-* Git
+### Product Module
+- Add Product
+- Update Product
+- Delete Product
+- Search Product
+- View Products
 
----
+### Cart Module
+- Add to Cart
+- Remove from Cart
+- Update Quantity
+- Grand Total Calculation
+- User-wise Cart
 
-## 🔧 Backend Setup
+### Checkout Module
+- Delivery Address
+- Payment Method
+- Order Summary
+- Place Order
 
-### 1. Clone the repository
+### Order Module
+- Create Orders
+- User Order History
+- Admin Order Management
+- Order Status Update
 
-```bash
-git clone https://github.com/Yogesh846/ShopSphere_E-Commerce_Web_Application.git
-```
-
-### 2. Navigate to the project
-
-```bash
-cd "ShopSphere E-Comm Website"
-```
-
-### 3. Navigate to the backend
-
-```bash
-cd Backend
-```
-
-### 4. Configure MySQL
-
-Update your `application.properties` file:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/shopsphere
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-
-spring.jpa.hibernate.ddl-auto=update
-```
-
-### 5. Run the backend
-
-```bash
-mvn spring-boot:run
-```
-
-Backend runs at:
-
-```text
-http://localhost:8080
-```
+### Admin Dashboard
+- Product Management
+- Inventory
+- Dashboard Statistics
+- Order Management
 
 ---
 
-## 💻 Frontend Setup
+## 🔒 Authentication
 
-Navigate to the frontend folder:
+JWT-based authentication is implemented.
 
-```bash
-cd shopsphere-frontend
-```
+Roles:
+- USER
+- ADMIN
 
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run the application:
-
-```bash
-npm start
-```
-
-Frontend runs at:
-
-```text
-http://localhost:3000
-```
-
----
-
-## 📡 REST API
-
-### Authentication
-
-* POST `/api/auth/register`
-* POST `/api/auth/login`
-
-### Products
-
-* GET `/api/products`
-* GET `/api/products/{id}`
-* POST `/api/products`
-* PUT `/api/products/{id}`
-* DELETE `/api/products/{id}`
-
-### Categories
-
-* GET `/api/categories`
-* POST `/api/categories`
-* PUT `/api/categories/{id}`
-* DELETE `/api/categories/{id}`
-
-### Orders
-
-* GET `/api/orders`
-* POST `/api/orders`
-
-### Cart
-
-* GET `/api/cart`
-* POST `/api/cart`
-* DELETE `/api/cart/{id}`
+Protected APIs are secured using Spring Security.
 
 ---
 
 ## 📸 Screenshots
 
-Add screenshots of your application here.
+Add screenshots here.
 
 Example:
 
-* Home Page
-* Login Page
-* Registration Page
-* Product Listing
-* Product Details
-* Shopping Cart
-* Checkout Page
-* Admin Dashboard
+```
+screenshots/
+│
+├── Login.png
+├── Register.png
+├── Products.png
+├── Cart.png
+├── Checkout.png
+├── Orders.png
+└── AdminDashboard.png
+```
 
 ---
 
-## 🔒 Security
+## ⚙️ Installation
 
-* JWT Authentication
-* Spring Security
-* Password Encryption
-* Role-Based Access Control (Admin/User)
-* Secure REST APIs
+### Clone Repository
+
+```bash
+git clone https://github.com/yourusername/shopsphere.git
+```
+
+### Backend
+
+```bash
+cd backend
+
+mvn clean install
+
+mvn spring-boot:run
+```
+
+Runs on:
+
+```
+http://localhost:8080
+```
+
+---
+
+### Frontend
+
+```bash
+cd frontend
+
+npm install
+
+npm start
+```
+
+Runs on:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🗄️ Database
+
+Create MySQL Database
+
+```sql
+CREATE DATABASE shopsphere;
+```
+
+Update
+
+```
+application.properties
+```
+
+with your database username and password.
+
+---
+
+## 📡 REST APIs
+
+### Authentication
+
+| Method | Endpoint |
+|---------|----------|
+| POST | /api/auth/register |
+| POST | /api/auth/login |
+
+### Products
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/products |
+| GET | /api/products/{id} |
+| POST | /api/products |
+| PUT | /api/products/{id} |
+| DELETE | /api/products/{id} |
+
+### Cart
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /api/cart/{userId} |
+| POST | /api/cart |
+| PUT | /api/cart/{id}/{quantity} |
+| DELETE | /api/cart/{id} |
+
+### Orders
+
+| Method | Endpoint |
+|---------|----------|
+| POST | /api/orders |
+| GET | /api/orders |
+| GET | /api/orders/user/{userId} |
+| PUT | /api/orders/{id}/{status} |
 
 ---
 
 ## 📈 Future Enhancements
 
-* Payment Gateway Integration
-* Email Notifications
-* Product Reviews & Ratings
-* Wishlist
-* Coupon & Discount System
-* Image Upload to Cloud Storage
-* Docker Deployment
-* CI/CD Pipeline
+- Wishlist
+- Product Reviews & Ratings
+- Online Payment Integration (Stripe/Razorpay)
+- Coupon & Discount System
+- Email Notifications
+- Product Categories
+- Pagination
+- Product Filters
+- Sales Analytics Dashboard
 
 ---
 
-## 🤝 Contributing
+## 🎯 Learning Outcomes
 
-Contributions are welcome.
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push the branch.
-5. Open a Pull Request.
-
----
-
-## 📄 License
-
-This project is developed for learning and portfolio purposes.
+- Spring Boot REST APIs
+- JWT Authentication
+- Spring Security
+- Hibernate & JPA
+- MySQL Integration
+- React Hooks
+- React Router
+- Axios API Integration
+- Bootstrap Responsive Design
+- Full Stack Application Development
+- CRUD Operations
+- Role-Based Access Control
 
 ---
 
@@ -274,10 +305,18 @@ This project is developed for learning and portfolio purposes.
 
 **Yogesh Kachare**
 
-**Java Full Stack Developer**
+📧 Email: yogeshkachare43@gmail.com
 
-* 📧 Email: [yogeshkachare43@gmail.com](mailto:yogeshkachare43@gmail.com)
-* 📱 Mobile: +91 9309816198
-* 💼 GitHub: https://github.com/Yogesh846
+📱 Mobile: +91 9309816198
 
-If you found this project helpful, consider giving it a ⭐ on GitHub.
+💼 Java Full Stack Developer
+
+🔗 LinkedIn: *(Add Your LinkedIn URL)*
+
+🔗 GitHub: *(Add Your GitHub Profile URL)*
+
+---
+
+## ⭐ Support
+
+If you found this project helpful, please consider giving it a ⭐ on GitHub.
