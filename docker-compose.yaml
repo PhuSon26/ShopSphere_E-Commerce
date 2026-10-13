@@ -11,7 +11,7 @@ services:
       - product-service
       - order-service
     ports:
-      - "${FRONTEND_PORT}:80"
+      - "80:80"
     networks:
       - shop-network
     
@@ -24,12 +24,12 @@ services:
     depends_on:
       - mysql
     environment:
-      - AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
-      - SPRING_DATASOURCE_URL=${AUTH_DB_URL}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD}        
+      - AUTH_SERVICE_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/auth_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sonnak123
     ports:
-      - "${AUTH_SERVICE_PORT}:8081"
+      - "8081:8081"
     networks:
       - shop-network
 
@@ -42,12 +42,12 @@ services:
     depends_on:
       - mysql
     environment:
-      - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT}
-      - SPRING_DATASOURCE_URL=${PRODUCT_DB_URL}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD} 
+      - PRODUCT_SERVICE_PORT=8082
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/product_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sonnak123
     ports:
-      - "${PRODUCT_SERVICE_PORT}:8082"
+      - "8082:8082"
     networks:
       - shop-network
 
@@ -60,12 +60,30 @@ services:
     depends_on:
       - mysql
     environment:
-      - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT}
-      - SPRING_DATASOURCE_URL=${ORDER_DB_URL}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD} 
+      - ORDER_SERVICE_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/order_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sonnak123
     ports:
-      - "${ORDER_SERVICE_PORT}:8083"
+      - "8083:8083"
+    networks:
+      - shop-network
+
+  payment-service:
+    build:
+      context: ./Payment_Service
+      dockerfile: Dockerfile
+    container_name: shop-payment-service
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      - ORDER_SERVICE_PORT=8084
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=sonnak123
+    ports:
+      - "8084:8084"
     networks:
       - shop-network
 
@@ -74,7 +92,7 @@ services:
     container_name: shop-mysql-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+      MYSQL_ROOT_PASSWORD: sonnak123 
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
