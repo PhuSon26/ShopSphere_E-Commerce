@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-deployment
+  namespace: nt533-web-ecommerce
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: product-deployment
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: product-deployment
+    spec:
+      containers:
+        - name: product-service
+          image: hoaanhuynh/nt533:shopsphere-product-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-service:3306/product_db
+          envFrom:
+            - configMapRef:
+                name: port-url-configmap
+            - secretRef:
+                name: mysql-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  namespace: nt533-web-ecommerce
+  labels:
+    app: auth-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-deployment
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: auth-deployment
+    spec:
+      containers:
+        - name: auth-service
+          image: hoaanhuynh/nt533:shopsphere-auth-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-service:3306/auth_db
+          envFrom:
+            - configMapRef:
+                name: port-url-configmap
+            - secretRef:
+                name: mysql-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
