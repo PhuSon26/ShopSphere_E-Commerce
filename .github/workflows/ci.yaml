@@ -1,0 +1,80 @@
+name: ShopSphere CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  IMAGE_PREFIX: hoaanhuynh/nt533
+
+jobs:
+  build-and-push:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      
+      - name: Build Auth Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Auth_Service
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:shopsphere-auth-service-sha-${{ github.sha }}
+
+      - name: Build Product Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Product_Service
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:shopsphere-product-service-sha-${{ github.sha }}
+          
+      - name: Build Order Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Order_Service
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:shopsphere-order-service-sha-${{ github.sha }}
+
+      - name: Build Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Frontend
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:shopsphere-frontend-sha-${{ github.sha }}
+
+      - name: Build Payment API Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Payment_Service
+          build-args: |
+            APP_ROLE=api
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:api-sha-${{ github.sha }}
+
+      - name: Build Payment Worker Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Payment_Service
+          build-args: |
+            APP_ROLE=worker 
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE_PREFIX }}:worker-sha-${{ github.sha }}
