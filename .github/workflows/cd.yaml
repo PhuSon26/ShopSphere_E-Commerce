@@ -1,0 +1,79 @@
+name: ShopSphere CD
+
+on:
+  workflow_run:
+    workflows:
+      - ShopSphere CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    if: >-
+      github.event.workflow_run.conclusion == 'success' && 
+      github.event.workflow_run.event == 'push' && 
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: self-hosted
+
+    env:
+      NAMESPACE: nt533-web-ecommerce
+      IMAGE_PREFIX: hoaanhuynh/nt533
+      IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Check Kubernetes connection
+        run: kubectl get nodes
+      
+      - name: Update Kubernetes Deployments
+        run: |
+          kubectl set image deployment/auth-deployment \
+            auth-service=${IMAGE_PREFIX}:shopsphere-auth-service-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+
+          kubectl set image deployment/product-deployment \
+            product-service=${IMAGE_PREFIX}:shopsphere-product-service-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+
+          kubectl set image deployment/order-deployment \
+            order-service=${IMAGE_PREFIX}:shopsphere-order-service-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+
+          kubectl set image deployment/frontend-deployment \
+            frontend=${IMAGE_PREFIX}:shopsphere-frontend-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+
+          kubectl set image deployment/payment-api-deployment \
+            payment-api-service=${IMAGE_PREFIX}:api-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+
+          kubectl set image deployment/payment-worker-deployment \
+            payment-worker-service=${IMAGE_PREFIX}:worker-sha-${IMAGE_TAG} \
+            -n ${NAMESPACE}
+      
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/auth-deployment \
+            -n ${NAMESPACE} --timeout=180s
+
+          kubectl rollout status deployment/product-deployment \
+            -n ${NAMESPACE} --timeout=180s
+
+          kubectl rollout status deployment/order-deployment \
+            -n ${NAMESPACE} --timeout=180s
+
+          kubectl rollout status deployment/frontend-deployment \
+            -n ${NAMESPACE} --timeout=180s
+
+          kubectl rollout status deployment/payment-api-deployment \
+            -n ${NAMESPACE} --timeout=180s
+
+          kubectl rollout status deployment/payment-worker-deployment \
+            -n ${NAMESPACE} --timeout=180s
+      
+      - name: Verify deployed images
+        run: |
+          kubectl get deployments -n ${NAMESPACE}
+          kubectl get pods -n ${NAMESPACE} -o wide
