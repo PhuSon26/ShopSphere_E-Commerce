@@ -1,0 +1,19 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled $svc.serviceEnabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svc.serviceName }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ $svc.selectorApp }}
+  ports:
+    - name: {{ if eq $name "frontend" }}tcp{{ else if eq $name "paymentApi" }}tcp{{ else }}http{{ end }}
+      port: {{ $svc.servicePort }}
+      targetPort: {{ $svc.port }}
+      protocol: TCP
+{{- end }}
+{{- end }}

@@ -1,0 +1,83 @@
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $svc.deploymentName }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: {{ $svc.selectorApp }}
+spec:
+  replicas: {{ $svc.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $svc.selectorApp }}
+  strategy:
+    type: RollingUpdate
+    {{- if or (eq $name "auth") (eq $name "frontend") }}
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ $svc.selectorApp }}
+    spec:
+      containers:
+        - name: {{ $svc.containerName }}
+          image: "{{ $.Values.image.repository }}:{{ if $.Values.image.sha }}{{ $svc.imageTag }}-sha-{{ $.Values.image.sha }}{{ else }}{{ $svc.imageTag }}{{ end }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          {{- if ne $name "paymentWorker" }}
+          ports:
+            - containerPort: {{ $svc.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if or (eq $name "auth") (eq $name "product") (eq $name "order") }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/{{ $svc.database }}"
+          envFrom:
+            - configMapRef:
+                name: {{ $.Values.configMap.name }}
+            - secretRef:
+                name: mysql-secret
+          {{- else if eq $name "paymentApi" }}
+          env:
+            - name: SERVER_PORT
+              value: "8084"
+            - name: PAYMENT_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.configMap.name }}
+                  key: PAYMENT_DB_URL
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/payment_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+          envFrom:
+            - secretRef:
+                name: payment-db-credentials
+          {{- else if eq $name "paymentWorker" }}
+          env:
+            - name: PAYMENT_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.configMap.name }}
+                  key: PAYMENT_DB_URL
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/payment_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: payment-db-credentials
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: payment-db-credentials
+                  key: SPRING_DATASOURCE_PASSWORD
+          {{- end }}
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+{{- end }}
+{{- end }}

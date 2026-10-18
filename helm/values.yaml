@@ -1,0 +1,187 @@
+namespace: nt533-web-ecommerce
+
+image:
+  repository: hoaanhuynh/nt533
+  pullPolicy: Always
+  sha: ""
+
+services:
+  auth:
+    enabled: true
+    deploymentName: auth-deployment
+    containerName: auth-service
+    imageTag: shopsphere-auth-service
+    replicas: 2
+    port: 8081
+    serviceEnabled: true
+    serviceName: auth-service
+    servicePort: 8081
+    selectorApp: auth-deployment
+    database: auth_db
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    hpa:
+      enabled: true
+      name: auth-autoscaling
+      minReplicas: 2
+      maxReplicas: 3
+
+  product:
+    enabled: true
+    deploymentName: product-deployment
+    containerName: product-service
+    imageTag: shopsphere-product-service
+    replicas: 2
+    port: 8082
+    serviceEnabled: true
+    serviceName: product-service
+    servicePort: 8082
+    selectorApp: product-deployment
+    database: product_db
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    hpa:
+      enabled: true
+      name: product-autoscaling
+      minReplicas: 2
+      maxReplicas: 3
+
+  order:
+    enabled: true
+    deploymentName: order-deployment
+    containerName: order-service
+    imageTag: shopsphere-order-service
+    replicas: 2
+    port: 8083
+    serviceEnabled: true
+    serviceName: order-service
+    servicePort: 8083
+    selectorApp: order-deployment
+    database: order_db
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    hpa:
+      enabled: true
+      name: order-autoscaling
+      minReplicas: 2
+      maxReplicas: 3
+
+  frontend:
+    enabled: true
+    deploymentName: frontend-deployment
+    containerName: frontend
+    imageTag: shopsphere-frontend
+    replicas: 2
+    port: 80
+    serviceEnabled: true
+    serviceName: frontend-service
+    servicePort: 8080
+    selectorApp: frontend
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1028Mi
+    hpa:
+      enabled: true
+      name: frontend-autoscaling
+      minReplicas: 2
+      maxReplicas: 3
+
+  paymentApi:
+    enabled: true
+    deploymentName: payment-api-deployment
+    containerName: payment-api-service
+    imageTag: api
+    replicas: 2
+    port: 8084
+    serviceEnabled: true
+    serviceName: payment-service
+    servicePort: 8084
+    selectorApp: payment-api-deployment
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    hpa:
+      enabled: true
+      name: payment-autoscaling
+      minReplicas: 2
+      maxReplicas: 3
+
+  paymentWorker:
+    enabled: true
+    deploymentName: payment-worker-deployment
+    containerName: payment-worker-service
+    imageTag: worker
+    replicas: 2
+    port: 0
+    serviceEnabled: false
+    selectorApp: payment-worker-deployment
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    hpa:
+      enabled: false
+
+configMap:
+  enabled: true
+  name: port-url-configmap
+  data:
+    AUTH_DB_URL: "jdbc:mysql://mysql-service:3306/auth_db"
+    AUTH_SERVICE_PORT: "8081"
+    ORDER_DB_URL: "jdbc:mysql://mysql-service:3306/order_db"
+    ORDER_SERVICE_PORT: "8083"
+    PAYMENT_DB_URL: "jdbc:mysql://mysql-service:3306/payment_db"
+    PAYMENT_SERVICE_PORT: "8084"
+    PRODUCT_DB_URL: "jdbc:mysql://mysql-service:3306/product_db"
+    PRODUCT_SERVICE_PORT: "8082"
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - name: nt533-ecommerce.uit.vn
+      ingressName: frontend-ingress
+      service: frontend-service
+      port: 8080
+    - name: auth-nt533-ecommerce.uit.vn
+      ingressName: auth-service-ingress
+      service: auth-service
+      port: 8081
+    - name: product-nt533-ecommerce.uit.vn
+      ingressName: product-service-ingress
+      service: product-service
+      port: 8082
+    - name: order-nt533-ecommerce.uit.vn
+      ingressName: order-service-ingress
+      service: order-service
+      port: 8083
+    - name: payment-nt533-ecommerce.uit.vn
+      ingressName: payment-service-ingress
+      service: payment-service
+      port: 8084

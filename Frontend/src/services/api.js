@@ -1,20 +1,29 @@
 import axios from "axios";
 
 const AUTH_API = axios.create({
-  baseURL: "http://localhost:8081/api",
+  baseURL: "/api",
 });
 
 const PRODUCT_API = axios.create({
-  baseURL: "http://localhost:8082/api",
+  baseURL: "/api",
 });
 
 const ORDER_API = axios.create({
-  baseURL: "http://localhost:8083/api",
+  baseURL: "/api",
 });
 
-// Giữ API default để các file cũ không bị lỗi import
+const PAYMENT_API = axios.create({
+  baseURL: "/api",
+});
+
+// Giữ API default để tương thích với các file cũ
 const API = ORDER_API;
 
-export { AUTH_API, PRODUCT_API, ORDER_API };
+export {
+  AUTH_API,
+  PRODUCT_API,
+  ORDER_API,
+  PAYMENT_API,
+};
 
 export default API;
