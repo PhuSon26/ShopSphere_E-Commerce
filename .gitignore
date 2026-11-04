@@ -1,3 +1,5 @@
 ﻿node_modules/
 .vscode/
 helm/rendered.yaml
+**/.terraform/*
+**/.terraform.lock.hcl
